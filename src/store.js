@@ -6,19 +6,23 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    user: null
+    user: null,
+    isNewUser: true
   },
   mutations: {
     SET_USER_DATA (state, userData) {
-      state.user = userData
       localStorage.setItem('user', JSON.stringify(userData))
       axios.defaults.headers.common['Authorization'] = `Bearer ${
         userData.token
       }`
+      state.user = userData
     },
-    CLEAR_USER_DATA () {
+    LOGOUT () {
       localStorage.removeItem('user')
       location.reload()
+    },
+    IS_NEW_USER (state, isNewUser) {
+      state.isNewUser = isNewUser
     }
   },
   actions: {
@@ -37,12 +41,10 @@ export default new Vuex.Store({
         })
     },
     logout ({ commit }) {
-      commit('CLEAR_USER_DATA')
-    }
-  },
-  getters: {
-    loggedIn (state) {
-      return !!state.user
+      commit('LOGOUT')
+    },
+    isNewUser ({ commit }, isNewUser) {
+      commit('IS_NEW_USER', isNewUser)
     }
   }
 })
